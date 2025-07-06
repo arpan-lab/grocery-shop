@@ -9,7 +9,7 @@ A full-stack grocery shopping application built using the **MERN Stack (MongoDB,
 
 ## 🚀 Live Demo
 
-🌐 **Frontend (Vercel)**: https://grocery-shop-dusky.vercel.app
+🌐 **Frontend (Vercel)**: https://grocery-shop-dusky.vercel.app/
 ## 📦 Features
 
 - ✅ User Signup & Login (with JWT auth)
