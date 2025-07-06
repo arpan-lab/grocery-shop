@@ -3,9 +3,7 @@
 
 A full-stack grocery shopping application built using the **MERN Stack (MongoDB, Express.js, React, Node.js)**. This app allows users to sign up, log in, view and add grocery items, manage their cart, and simulate the checkout process.
 
-## 🚀 Live Demo
-| Layer                     | URL                                                                              |
-| ------------------------- | -------------------------------------------------------------------------------- |
+
 
 
 - ✅ User Signup & Login (with JWT auth)
