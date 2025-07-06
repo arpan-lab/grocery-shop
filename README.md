@@ -7,7 +7,9 @@ Perfect! Here's a professional and informative `README.md` you can add to your g
 
 A full-stack grocery shopping application built using the **MERN Stack (MongoDB, Express.js, React, Node.js)**. This app allows users to sign up, log in, view and add grocery items, manage their cart, and simulate the checkout process.
 
----
+## 🚀 Live Demo
+
+🌐 **Frontend (Vercel)**: https://your-frontend.vercel.app](https://your-frontend.vercel.app  ---
 
 ---
 
