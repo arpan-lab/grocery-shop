@@ -130,14 +130,3 @@ Plus background images:
 Built with 💙 by [Arpan Chakrabarty](https://github.com/arpan-lab)
 
 ---
-
-## 📜 License
-
-MIT License
-
-```
-
----
-
-Let me know if you'd like a Hindi version, badges, or shields for GitHub, or if you want this auto-generated into a `README.md` file for download.
-```
