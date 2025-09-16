@@ -10,25 +10,6 @@ const generateToken = (adminId) => {
   return jwt.sign({ adminId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
-// 📝 Register Admin
-export const registerAdmin = async (req, res) => {
-  const { name, email, password } = req.body;
-
-  try {
-    const existingAdmin = await Admin.findOne({ email });
-    if (existingAdmin) {
-      return res.status(400).json({ message: "Admin already exists" });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newAdmin = await Admin.create({ name, email, password: hashedPassword });
-
-    const token = generateToken(newAdmin._id);
-    res.status(201).json({ token, admin: { id: newAdmin._id, name, email } });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
 
 // 🔐 Login Admin
 export const loginAdmin = async (req, res) => {
