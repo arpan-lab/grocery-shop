@@ -14,16 +14,16 @@ mongoose.connect(process.env.MONGO_URI)
 
 const createAdmin = async () => {
   try {
-    const existing = await Admin.findOne({ email: "babi@example.com" });
+    const existing = await Admin.findOne({ email: "admin@example.com" });
     if (existing) {
       console.log("⚠️ Admin already exists");
       return mongoose.disconnect();
     }
 
     const newAdmin = new Admin({
-      name: "babi",
-      email: "babi@example.com",
-      password: "babi@123", // Will be hashed via pre-save hook
+      name: "admin",
+      email: "admin@example.com",
+      password: "admin@985", // Will be hashed via pre-save hook
     });
 
     await newAdmin.save();
