@@ -1,10 +1,10 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
+import { getToken } from "../utils/auth"; // 👈 adjust if your auth util differs
 
-// ✅ Grocery Cart Context
 export const CartContext = createContext();
 
-// ✅ Import all images
+// ✅ Import images
 import milk from "../assets/milk.jpeg";
 import bread from "../assets/bread.jpeg";
 import eggs from "../assets/eggs.jpeg";
@@ -22,7 +22,6 @@ import dabur from "../assets/dabur.jpeg";
 import indiagate from "../assets/indiagate.jpeg";
 import closeup from "../assets/closeup.jpeg";
 
-// ✅ Image mapping
 const fallbackImages = {
   milk,
   bread,
@@ -42,9 +41,42 @@ const fallbackImages = {
   closeup,
 };
 
-// ✅ Context Provider
+// 🧠 Helper: extract user identifier from token or storage
+const getCurrentUserKey = () => {
+  try {
+    const token = getToken();
+    if (!token) return "guest_cart";
+
+    // Example: decode token payload if JWT
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    const userId = payload.id || payload.email || "user";
+    return `cartItems_${userId}`;
+  } catch {
+    return "guest_cart";
+  }
+};
+
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [storageKey, setStorageKey] = useState("guest_cart");
+
+  // 🟢 Load user-specific cart on login or token change
+  useEffect(() => {
+    const key = getCurrentUserKey();
+    setStorageKey(key);
+
+    try {
+      const stored = localStorage.getItem(key);
+      setCartItems(stored ? JSON.parse(stored) : []);
+    } catch {
+      setCartItems([]);
+    }
+  }, []);
+
+  // 🟢 Save cart to user-specific storage
+  useEffect(() => {
+    localStorage.setItem(storageKey, JSON.stringify(cartItems));
+  }, [cartItems, storageKey]);
 
   const addToCart = (item) => {
     const key = item.name?.toLowerCase().replace(/\s+/g, "");
@@ -52,52 +84,43 @@ export const CartProvider = ({ children }) => {
     const updatedItem = { ...item, image, quantity: 1 };
 
     setCartItems((prev) => {
-      // Check if item already exists
-      const existingItemIndex = prev.findIndex(
-        (cartItem) => cartItem._id === item._id
-      );
+      const exists = prev.find((p) => p._id === item._id);
+      const newCart = exists
+        ? prev.map((p) =>
+            p._id === item._id ? { ...p, quantity: p.quantity + 1 } : p
+          )
+        : [...prev, updatedItem];
 
-      if (existingItemIndex !== -1) {
-        // Update quantity if item exists
-        const updatedCart = [...prev];
-        updatedCart[existingItemIndex].quantity += 1;
-        return updatedCart;
-      } else {
-        // Add new item
-        return [...prev, updatedItem];
-      }
+      alert(`${item.name} added to cart 🛒`);
+      return newCart;
     });
   };
 
-  const removeFromCart = (id) => {
+  const removeFromCart = (id) =>
     setCartItems((prev) => prev.filter((item) => item._id !== id));
-  };
 
-  const updateQuantity = (id, newQuantity) => {
-    if (newQuantity <= 0) {
-      removeFromCart(id);
-      return;
-    }
-
+  const updateQuantity = (id, newQty) => {
+    if (newQty <= 0) return removeFromCart(id);
     setCartItems((prev) =>
       prev.map((item) =>
-        item._id === id ? { ...item, quantity: newQuantity } : item
+        item._id === id ? { ...item, quantity: newQty } : item
       )
     );
   };
 
-  const getTotalPrice = () => {
-    return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
+  const getTotalPrice = () =>
+    cartItems.reduce(
+      (sum, item) => sum + (item.price || 0) * (item.quantity || 1),
       0
     );
-  };
 
-  const getTotalItems = () => {
-    return cartItems.reduce((total, item) => total + item.quantity, 0);
-  };
+  const getTotalItems = () =>
+    cartItems.reduce((sum, item) => sum + (item.quantity || 0), 0);
 
-  const clearCart = () => setCartItems([]);
+  const clearCart = () => {
+    setCartItems([]);
+    localStorage.removeItem(storageKey);
+  };
 
   return (
     <CartContext.Provider
@@ -115,3 +138,5 @@ export const CartProvider = ({ children }) => {
     </CartContext.Provider>
   );
 };
+
+

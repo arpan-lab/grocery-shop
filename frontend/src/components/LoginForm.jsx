@@ -13,17 +13,24 @@ const LoginForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post(`${baseURL}/auth/signin`, formData); // ✅ fixed endpoint
-      setToken(res.data.token);
-      toast.success("Logged in successfully!");
-      navigate("/");
-    } catch (err) {
-      toast.error(err.response?.data?.error || "Login failed"); // also fixed error key
-    }
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post(`${baseURL}/auth/signin`, formData);
+
+    // ✅ Save token
+    setToken(res.data.token);
+
+    // ✅ Save user info to localStorage for cart persistence
+    localStorage.setItem("user", JSON.stringify(res.data.user));
+
+    toast.success("Logged in successfully!");
+    navigate("/"); // redirect to home
+  } catch (err) {
+    toast.error(err.response?.data?.error || "Login failed");
+  }
+};
+
 
   return (
     <form onSubmit={handleSubmit}>
