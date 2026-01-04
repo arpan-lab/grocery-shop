@@ -195,3 +195,76 @@ h2 {
     height: 140px;
   }
 }
+/* FLOATING CATEGORY BAR */
+.category-glass-bar {
+  position: sticky;
+  top: 10px;
+  z-index: 1000;
+  margin: 20px auto;
+  width: 95%;
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 50px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  padding: 10px 16px;
+}
+
+.category-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.category-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.category-pill {
+  padding: 10px 22px;
+  border-radius: 30px;
+  border: none;
+  font-weight: 600;
+  background: #fff;
+  color: #111;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.category-pill:hover {
+  background: #111;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* SECTION TITLE */
+.section-title {
+  position: relative;
+}
+
+.section-title::after {
+  content: "";
+  width: 60px;
+  height: 3px;
+  background: #111;
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  border-radius: 10px;
+}
+
+/* PRODUCT CARD */
+.item-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.item-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+.category-pill.active {
+  background: #111;
+  color: #fff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
 import { getToken } from "../utils/auth";
 import { useCart } from "../context/useCart";
@@ -44,15 +44,13 @@ const fallbackImages = {
   closeup,
 };
 
-// CATEGORY MAPPING BASED ON PRODUCT NAME
+// Categorization
 const categorize = (name) => {
   const n = name.toLowerCase();
 
-  // Dairy
   if (n.includes("milk") || n.includes("egg") || n.includes("cornflakes"))
     return "Dairy";
 
-  // Bakery & Biscuits
   if (
     n.includes("bread") ||
     n.includes("oreo") ||
@@ -62,19 +60,15 @@ const categorize = (name) => {
   )
     return "Bakery & Biscuits";
 
-  // Vegetables
   if (n.includes("tomato") || n.includes("onion") || n.includes("garlic"))
     return "Vegetables";
 
-  // Snacks & Instant
   if (n.includes("maggie") || n.includes("maggi"))
     return "Snacks & Instant";
 
-  // Staples
   if (n.includes("salt") || n.includes("indiagate"))
     return "Staples";
 
-  // Personal Care (DABUR FIXED HERE)
   if (n.includes("closeup") || n.includes("dabur"))
     return "Personal Care";
 
@@ -83,6 +77,7 @@ const categorize = (name) => {
 
 const GroceryList = () => {
   const [items, setItems] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const { addToCart } = useCart();
   const baseURL = import.meta.env.VITE_API_URL;
 
@@ -92,8 +87,8 @@ const GroceryList = () => {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       setItems(res.data);
-    } catch (error) {
-      console.error("Error fetching items:", error.message);
+    } catch (err) {
+      console.error(err.message);
     }
   }, [baseURL]);
 
@@ -102,63 +97,94 @@ const GroceryList = () => {
   }, [fetchItems]);
 
   // Group items by category
-  const categoryMap = items.reduce((acc, item) => {
-    const category = categorize(item.name);
+  const categoryMap = useMemo(() => {
+    return items.reduce((acc, item) => {
+      const cat = categorize(item.name);
+      if (!acc[cat]) acc[cat] = [];
+      acc[cat].push(item);
+      return acc;
+    }, {});
+  }, [items]);
 
-    if (!acc[category]) acc[category] = [];
-    acc[category].push(item);
+  const categories = ["All", ...Object.keys(categoryMap)];
 
-    return acc;
-  }, {});
+  // Decide what to show
+  const visibleCategories =
+    selectedCategory === "All"
+      ? Object.keys(categoryMap)
+      : [selectedCategory];
 
   return (
     <>
-      {/* HERO SECTION */}
+      {/* HERO */}
       <div className="hero-container">
         <video autoPlay muted loop className="hero-video">
           <source src={bgVideo} type="video/mp4" />
         </video>
-
         <div className="overlay">
-          <h1 className="display-4 fw-bold text-white">Fresh Groceries Daily</h1>
+          <h1 className="display-4 fw-bold text-white">
+            Fresh Groceries Daily
+          </h1>
           <p className="lead text-white">
-            Browse categories and shop your daily essentials.
+            Handpicked essentials, delivered fresh.
           </p>
         </div>
       </div>
 
-      <div className="container py-5">
-        <h2 className="fw-bold text-center mb-5">Product Categories</h2>
+      {/* CATEGORY FILTER BAR */}
+      {categories.length > 1 && (
+        <div className="category-glass-bar">
+          <div className="category-scroll">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                className={`category-pill ${
+                  selectedCategory === cat ? "active" : ""
+                }`}
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
-        {/* CATEGORY SECTIONS */}
-        {Object.keys(categoryMap).map((category) => (
-          <div key={category} className="mb-5">
-            <h3 className="fw-semibold mb-3 text-capitalize border-bottom pb-2">
+      {/* PRODUCTS */}
+      <div className="container py-5">
+        {visibleCategories.map((category) => (
+          <section key={category} className="mb-5">
+            <h3 className="fw-bold mb-4 section-title">
               {category}
             </h3>
 
             <div className="row">
-              {categoryMap[category].map((item) => {
-                const key = item.name?.toLowerCase().replace(/\s+/g, "");
-                const fallback = fallbackImages[key] || milk;
+              {categoryMap[category]?.map((item) => {
+                const key = item.name
+                  ?.toLowerCase()
+                  .replace(/\s+/g, "");
+                const img = fallbackImages[key] || milk;
 
                 return (
                   <div key={item._id} className="col-md-4 mb-4">
-                    <div className="card h-100 shadow border-0 item-card">
+                    <div className="card h-100 border-0 shadow-sm item-card">
                       <img
-                        src={fallback}
+                        src={img}
                         alt={item.name}
-                        className="card-img-top"
-                        style={{ height: "220px", objectFit: "cover" }}
+                        className="product-image"
                       />
                       <div className="card-body d-flex flex-column">
-                        <h5 className="card-title text-capitalize">{item.name}</h5>
-                        <p className="card-text mb-1">Quantity: {item.quantity}</p>
-                        <p className="card-text text-success fw-bold mb-2">
+                        <h5 className="fw-semibold">
+                          {item.name}
+                        </h5>
+                        <p className="mb-1">
+                          Qty: {item.quantity}
+                        </p>
+                        <p className="fw-bold text-success">
                           ₹{item.price}
                         </p>
                         <button
-                          className="btn btn-outline-success mt-auto w-100"
+                          className="btn btn-dark mt-auto w-100"
                           onClick={() => addToCart(item)}
                         >
                           Add to Cart 🛒
@@ -169,12 +195,8 @@ const GroceryList = () => {
                 );
               })}
             </div>
-          </div>
+          </section>
         ))}
-
-        {items.length === 0 && (
-          <p className="text-center text-muted mt-5">No products available.</p>
-        )}
       </div>
     </>
   );

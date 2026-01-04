@@ -1,0 +1,152 @@
+/* MAIN WRAPPER */
+.figma-auth-wrapper {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  background: #eef3ff;
+  font-family: "Inter", sans-serif;
+}
+
+/* LEFT PANEL */
+.figma-auth-left {
+  position: relative;
+  background: linear-gradient(160deg, #1a4fd8, #0b2fa3);
+  color: #fff;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.figma-left-content {
+  position: relative;
+  z-index: 2;
+  max-width: 360px;
+}
+
+.figma-left-content h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.figma-left-content p {
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+/* ABSTRACT SHAPES */
+.figma-shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.35;
+}
+
+.shape-1 {
+  width: 260px;
+  height: 260px;
+  background: #6fa8ff;
+  top: -60px;
+  left: -60px;
+}
+
+.shape-2 {
+  width: 180px;
+  height: 180px;
+  background: #ffcc70;
+  bottom: 60px;
+  left: 80px;
+}
+
+.shape-3 {
+  width: 320px;
+  height: 320px;
+  background: #3c6df0;
+  bottom: -120px;
+  right: -120px;
+}
+
+/* RIGHT PANEL */
+.figma-auth-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef3ff;
+}
+
+/* LOGIN CARD */
+.figma-login-card {
+  background: #fff;
+  width: 100%;
+  max-width: 380px;
+  padding: 40px 36px;
+  border-radius: 18px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+}
+
+.figma-login-card h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 28px;
+}
+
+/* INPUTS */
+.figma-input-group {
+  margin-bottom: 20px;
+}
+
+.figma-input-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.figma-input-group input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #d6d6d6;
+  transition: all 0.25s ease;
+}
+
+.figma-input-group input:focus {
+  outline: none;
+  border-color: #1a4fd8;
+  box-shadow: 0 0 0 3px rgba(26, 79, 216, 0.15);
+}
+
+/* BUTTON */
+.figma-login-btn {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 12px;
+  background: #1a4fd8;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+}
+
+.figma-login-btn:hover {
+  background: #133bb0;
+  transform: translateY(-1px);
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .figma-auth-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .figma-auth-left {
+    display: none;
+  }
+}
